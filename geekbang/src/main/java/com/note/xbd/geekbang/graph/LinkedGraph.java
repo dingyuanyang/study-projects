@@ -54,11 +54,14 @@ public class LinkedGraph {
             for (int i = 0; i < adj[w].size(); i++) {
                 int q = adj[w].get(i);
                 if (!visited[q]) {
-                    print(prev, s, t);
-                    return;
+                    prev[q] = w;
+                    if (q==t) {
+                        print(prev, s, t);
+                        return;
+                    }
+                    visited[q] = true;
+                    queue.add(q);
                 }
-                visited[q] = true;
-                queue.add(q);
             }
         }
     }
@@ -74,7 +77,38 @@ public class LinkedGraph {
         if (prev[t] != -1 && t != s) {
             print(prev, s, prev[t]);
         }
-        System.out.println(t + " ");
+        System.out.print(t + "\t");
+    }
+
+    private boolean found  = false;
+
+    public void dfs(int s, int t){
+        found = false;
+        boolean[] visited = new boolean[v];
+        int[] prev = new int[v];
+        for (int i = 0; i < v; i++) {
+            prev[i] = -1;
+        }
+        recurDfs(s, t, visited, prev);
+        print(prev, s, t);
+    }
+
+    private void recurDfs(int w, int t, boolean[] visited, int[] prev) {
+        if(found == true){
+            return;
+        }
+        visited[w] = true;
+        if(w==t){
+            found = true;
+            return;
+        }
+        for (int i = 0; i < adj[w].size(); i++) {
+            int q = adj[w].get(i);
+            if(!visited[q]){
+                prev[q] = w;
+                recurDfs(q,t,visited,prev);
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -89,6 +123,8 @@ public class LinkedGraph {
         graph.addEdge(6,7);
         graph.addEdge(5,7);
 
-        graph.bfs(4,8);
+        graph.bfs(0,4);
+        System.out.println("");
+        graph.dfs(0,4);
     }
 }
